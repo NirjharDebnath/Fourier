@@ -1,11 +1,11 @@
 section .data
-    msg db "Hello, World!", 0Ah
+    msg db "Hello, World!\n", 0Ah
 
 section .text
     global _start
 
 _start:
-    mov edx, 13
+    mov edx, 14
     mov ecx, msg
     mov ebx, 1
     mov eax, 4

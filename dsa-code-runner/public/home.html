@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome - DSA Code Runner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #4f46e5; --primary-hover-color: #4338ca; }
+        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #6366f1; --primary-hover-color: #4f46e5; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; }
+        .card { background-color: var(--card-bg-color); transition: background-color 0.3s ease; }
+        .portal-button { background-color: var(--primary-color); transition: background-color 0.3s ease; }
+        .portal-button:hover { background-color: var(--primary-hover-color); }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto p-4 sm:p-8">
+        <header class="flex justify-between items-center max-w-5xl mx-auto mb-8">
+            <h1 class="text-3xl font-bold">DSA Code Runner</h1>
+            <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2" style="color: var(--text-muted-color); --tw-ring-color: var(--primary-color);">
+                <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                <svg id="theme-icon-light" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            </button>
+        </header>
+
+        <div class="max-w-5xl mx-auto text-center mb-12">
+            <h2 class="text-4xl font-extrabold" style="color: var(--text-color);">A Secure, Multi-Language Sandbox for Education</h2>
+            <p class="mt-4 max-w-3xl mx-auto text-lg" style="color: var(--text-muted-color);">
+                Built for the students of Kalyani Government Engineering College, this platform provides a consistent and isolated environment to compile and run Data Structures and Algorithms code in Python, C, C++, and Java, right from your browser.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div class="card p-8 rounded-xl shadow-2xl flex flex-col items-center text-center">
+                <h2 class="text-2xl font-bold">For Students</h2>
+                <p class="mt-2 mb-6" style="color: var(--text-muted-color);">Login with your name and roll number to access the code editor.</p>
+                <a href="/login" class="portal-button w-full text-white font-bold py-3 px-4 rounded-md shadow-lg mt-auto">Student Login</a>
+            </div>
+            <div class="card p-8 rounded-xl shadow-2xl flex flex-col items-center text-center">
+                <h2 class="text-2xl font-bold">For Teachers</h2>
+                <p class="mt-2 mb-6" style="color: var(--text-muted-color);">Login to view the admin dashboard and monitor student activity.</p>
+                <a href="/admin/login" class="portal-button w-full text-white font-bold py-3 px-4 rounded-md shadow-lg mt-auto">Teacher Login</a>
+            </div>
+        </div>
+
+        <div class="text-center mt-12">
+            <a href="/docs" class="font-medium" style="color: var(--primary-color);">View Documentation & Credits</a>
+        </div>
+    </div>
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIconDark = document.getElementById('theme-icon-dark');
+        const themeIconLight = document.getElementById('theme-icon-light');
+        function applyTheme(theme) { if (theme === 'dark') { document.documentElement.classList.add('dark'); themeIconLight.classList.remove('hidden'); themeIconDark.classList.add('hidden'); } else { document.documentElement.classList.remove('dark'); themeIconDark.classList.remove('hidden'); themeIconLight.classList.add('hidden'); } }
+        themeToggle.addEventListener('click', () => { const isDark = document.documentElement.classList.toggle('dark'); const newTheme = isDark ? 'dark' : 'light'; localStorage.setItem('theme', newTheme); applyTheme(newTheme); });
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(savedTheme);
+    </script>
+</body>
+</html>

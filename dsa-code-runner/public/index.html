@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <title>DSA Code Runner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #4f46e5; --primary-hover-color: #4338ca; --output-bg-color: #111827; --output-text-color: #f9fafb; }
+        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #6366f1; --primary-hover-color: #4f46e5; --output-bg-color: #030712; --output-text-color: #d1d5db; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; }
+        .card { background-color: var(--card-bg-color); transition: background-color 0.3s ease; }
+        textarea, select { background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-color); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+        textarea:focus, select:focus { --tw-ring-color: var(--primary-color); border-color: var(--primary-color); }
+        .run-button { background-color: var(--primary-color); transition: background-color 0.3s ease; }
+        .run-button:hover { background-color: var(--primary-hover-color); }
+        .run-button:disabled { background-color: var(--border-color); cursor: not-allowed; }
+        .output-pre { background-color: var(--output-bg-color); color: var(--output-text-color); transition: background-color 0.3s ease, color 0.3s ease; }
+        textarea::-webkit-scrollbar, pre::-webkit-scrollbar { width: 8px; }
+        textarea::-webkit-scrollbar-track, pre::-webkit-scrollbar-track { background: transparent; }
+        textarea::-webkit-scrollbar-thumb, pre::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 20px; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto p-4 sm:p-8 max-w-7xl">
+        <div class="card rounded-xl shadow-2xl p-6 sm:p-8">
+            <header class="flex justify-between items-center mb-6 pb-4 border-b" style="border-color: var(--border-color);">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold">Welcome, {{ user.name }}</h1>
+                    <p class="text-sm mt-1" style="color: var(--text-muted-color);">Roll: {{ user.roll }}</p>
+                </div>
+                <div class="flex items-center">
+                    <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2" style="color: var(--text-muted-color); --tw-ring-color: var(--primary-color);">
+                        <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                        <svg id="theme-icon-light" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    </button>
+                    <a href="/logout" class="ml-4 text-sm font-medium" style="color: var(--text-muted-color);">Logout</a>
+                </div>
+            </header>
+
+            <div class="mb-4">
+                <label for="language" class="block text-sm font-medium mb-1">Language:</label>
+                <select id="language" name="language" class="block w-full max-w-xs pl-3 pr-10 py-2 text-base sm:text-sm rounded-md shadow-sm">
+                    <option value="python">Python</option>
+                    <option value="cpp">C++</option>
+                    <option value="c">C</option>
+                    <option value="java">Java</option>
+                </select>
+            </div>
+
+            <!-- GFG/LeetCode Style Layout -->
+            <div class="flex flex-col md:flex-row gap-6" style="height: 65vh;">
+                <!-- Left Column: Code Editor -->
+                <div class="w-full md:w-3/5 flex flex-col">
+                    <label for="codeInput" class="block text-sm font-medium mb-2">Your Code:</label>
+                    <textarea id="codeInput" class="flex-grow w-full p-3 rounded-md shadow-sm font-mono text-sm"></textarea>
+                </div>
+
+                <!-- Right Column: Input & Output -->
+                <div class="w-full md:w-2/5 flex flex-col gap-4">
+                    <!-- Input Area -->
+                    <div class="flex flex-col h-2/5">
+                        <label for="inputData" class="block text-sm font-medium mb-2">Standard Input (stdin):</label>
+                        <textarea id="inputData" class="flex-grow w-full p-3 rounded-md shadow-sm font-mono text-sm"></textarea>
+                    </div>
+                    <!-- Output Area -->
+                    <div class="flex flex-col h-3/5">
+                        <h2 class="text-lg font-semibold mb-2">Output:</h2>
+                        <pre id="output" class="output-pre flex-grow p-4 rounded-md overflow-y-auto text-sm whitespace-pre-wrap font-mono"></pre>
+                    </div>
+                </div>
+            </div>
+            
+            <button id="runButton" class="run-button w-full mt-6 text-white font-bold py-3 px-4 rounded-md shadow-lg">Run Code</button>
+        </div>
+    </div>
+    <script>
+        const codeInput = document.getElementById('codeInput'), inputData = document.getElementById('inputData'), languageSelect = document.getElementById('language'), outputElement = document.getElementById('output'), runButton = document.getElementById('runButton'), themeToggle = document.getElementById('theme-toggle'), themeIconDark = document.getElementById('theme-icon-dark'), themeIconLight = document.getElementById('theme-icon-light');
+        function applyTheme(theme) { if (theme === 'dark') { document.documentElement.classList.add('dark'); themeIconLight.classList.remove('hidden'); themeIconDark.classList.add('hidden'); } else { document.documentElement.classList.remove('dark'); themeIconDark.classList.remove('hidden'); themeIconLight.classList.add('hidden'); } }
+        themeToggle.addEventListener('click', () => { const isDark = document.documentElement.classList.toggle('dark'); const newTheme = isDark ? 'dark' : 'light'; localStorage.setItem('theme', newTheme); applyTheme(newTheme); });
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(savedTheme);
+        languageSelect.addEventListener('change', () => { const placeholders = { python: 'print("Hello from Python!")', cpp: '#include <iostream>\\n\\nint main() {\\n    std::cout << "Hello from C++!";\\n    return 0;\\n}', c: '#include <stdio.h>\\n\\nint main() {\\n    printf("Hello from C!");\\n    return 0;\\n}', java: 'public class Main {\\n    public static void main(String[] args) {\\n        System.out.println("Hello from Java!");\\n    }\\n}' }; codeInput.placeholder = placeholders[languageSelect.value]; });
+        languageSelect.dispatchEvent(new Event('change'));
+        runButton.addEventListener('click', async () => {
+            runButton.disabled = true; runButton.textContent = 'Executing...'; outputElement.textContent = 'Running...';
+            try {
+                const response = await fetch('/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language: languageSelect.value, code: codeInput.value, input_data: inputData.value }), });
+                const result = await response.json();
+                outputElement.textContent = result.output || result.error || 'No output.';
+            } catch (error) { console.error('Error:', error); outputElement.textContent = 'An error occurred. Check the server console.'; } finally { runButton.disabled = false; runButton.textContent = 'Run Code'; }
+        });
+    </script>
+</body>
+</html>

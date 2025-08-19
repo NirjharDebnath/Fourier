@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentation - DSA Code Runner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #4f46e5; }
+        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #6366f1; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; }
+        .card { background-color: var(--card-bg-color); transition: background-color 0.3s ease; }
+        h2 { border-bottom: 1px solid var(--border-color); }
+        code { background-color: var(--bg-color); color: var(--primary-color); }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto p-4 sm:p-8 max-w-4xl">
+        <div class="card rounded-xl shadow-2xl p-6 sm:p-8">
+            <header class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-3xl font-bold">Documentation</h1>
+                    <a href="/" class="text-sm mt-1" style="color: var(--primary-color);">← Back to Home</a>
+                </div>
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2" style="color: var(--text-muted-color); --tw-ring-color: var(--primary-color);">
+                    <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <svg id="theme-icon-light" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </button>
+            </header>
+
+            <article class="prose dark:prose-invert max-w-none" style="color: var(--text-color);">
+                <h2 class="text-2xl font-semibold pb-2 mb-4">How to Use</h2>
+                <p>This platform is designed to be simple and intuitive. Follow the steps below to get started.</p>
+                
+                <h3 class="text-xl font-semibold mt-6">For Students</h3>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>From the home page, click on the <strong>Student Login</strong> button.</li>
+                    <li>Enter your full name and university roll number to access the IDE.</li>
+                    <li>Once in the IDE, select your desired programming language from the dropdown menu.</li>
+                    <li>Write your code in the left text area and provide any necessary standard input (stdin) in the right text area.</li>
+                    <li>Click the <strong>Run Code</strong> button to execute your program in a secure Docker container. The output will appear at the bottom.</li>
+                </ol>
+
+                <h3 class="text-xl font-semibold mt-6">For Teachers</h3>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>From the home page, click on the <strong>Teacher Login</strong> button.</li>
+                    <li>Enter the admin credentials to access the dashboard.</li>
+                    <li>The dashboard provides a live view of all currently logged-in students, including their roll number, name, IP address, and login time.</li>
+                </ol>
+
+                <h2 class="text-2xl font-semibold pb-2 mb-4 mt-8">Supported Languages</h2>
+                <p>The runner supports the following languages with these specific requirements:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong>Python:</strong> Uses Python 3.12.</li>
+                    <li><strong>C/C++:</strong> Uses the latest GCC/G++ compilers.</li>
+                    <li><strong>Java:</strong> Uses OpenJDK 17. The system is smart! It will automatically detect the name of your <code>public class</code> and name the file accordingly, so you don't have to name it <code>Main</code>.</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold pb-2 mb-4 mt-8">Credits</h2>
+                <!-- Your Credits Snippet Goes Here -->
+                <div class="p-4 rounded-lg" style="background-color: var(--bg-color);">
+                    <p>This project was conceptualized and developed by <strong>Dwaipayan Datta and Nirjhar Debnath</strong>, students of the Computer Science and Engineering department at Kalyani Government Engineering College.</p>
+                    <p class="mt-2">This collaborative effort aims to provide a modern and useful tool for the academic community at KGEC.</p>
+                </div>
+            </article>
+        </div>
+    </div>
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIconDark = document.getElementById('theme-icon-dark');
+        const themeIconLight = document.getElementById('theme-icon-light');
+        function applyTheme(theme) { if (theme === 'dark') { document.documentElement.classList.add('dark'); themeIconLight.classList.remove('hidden'); themeIconDark.classList.add('hidden'); } else { document.documentElement.classList.remove('dark'); themeIconDark.classList.remove('hidden'); themeIconLight.classList.add('hidden'); } }
+        themeToggle.addEventListener('click', () => { const isDark = document.documentElement.classList.toggle('dark'); const newTheme = isDark ? 'dark' : 'light'; localStorage.setItem('theme', newTheme); applyTheme(newTheme); });
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(savedTheme);
+    </script>
+</body>
+</html>

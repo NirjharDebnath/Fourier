@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" class="">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --border-color: #d1d5db; }
+        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --border-color: #4b5563; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        .card { background-color: var(--card-bg-color); }
+        th { background-color: var(--bg-color); }
+    </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8">
+    <div class="card container mx-auto max-w-6xl p-6 rounded-xl shadow-2xl">
+        <h1 class="text-2xl sm:text-3xl font-bold mb-4">Admin Dashboard</h1>
+        <p class="text-sm mb-6" style="color: var(--text-muted-color);">Live view of all active student sessions.</p>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y" style="border-color: var(--border-color);">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Roll Number</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Name</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">IP Address</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Login Time</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Status</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y" style="border-color: var(--border-color);">
+                    {% for id, details in sessions.items() %}
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ details.roll }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ details.name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ details.ip_address }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">{{ details.login_time }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                {{ details.status }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
