@@ -1,29 +1,14 @@
 #include <iostream>
-#include <stdio.h>
-
-// Macro for checking CUDA API calls for errors
-#define CUDA_CHECK(err) \
-    if (err != cudaSuccess) { \
-        fprintf(stderr, "CUDA Error: %s at %s:%d\n", cudaGetErrorString(err), __FILE__, __LINE__); \
-        exit(EXIT_FAILURE); \
-    }
-
-__global__ void helloFromGPU() {
-    printf("Hello World from GPU thread %d!\n", threadIdx.x);
-}
-
+#include <cuda_runtime.h>
 int main() {
-    std::cout << "Hello World from CPU!" << std::endl;
-
-    // Launch the kernel
-    helloFromGPU<<<2, 10>>>();
-
-    // Check for any errors that might have occurred during kernel launch
-    // This is the most important check!
-    CUDA_CHECK(cudaGetLastError());
-
-    // Reset the device and check for errors
-    CUDA_CHECK(cudaDeviceReset());
-
+    int count = 0;
+    cudaGetDeviceCount(&count);
+    std::cout << "CUDA Devices: " << count << std::endl;
+    for(int i=0;i<count;i++){
+        cudaDeviceProp prop;
+        cudaGetDeviceProperties(&prop, i);
+        std::cout << "Device " << i << ": " << prop.name 
+                  << " with " << prop.totalGlobalMem/1024/1024 << " MB" << std::endl;
+    }
     return 0;
 }

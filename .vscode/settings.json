@@ -55,5 +55,16 @@
   "C_Cpp_Runner.useLeakSanitizer": false,
   "C_Cpp_Runner.showCompilationTime": false,
   "C_Cpp_Runner.useLinkTimeOptimization": false,
-  "C_Cpp_Runner.msvcSecureNoWarnings": false
+  "C_Cpp_Runner.msvcSecureNoWarnings": false,
+
+  "C_Cpp.default.compilerPath": "/usr/local/cuda/bin/nvcc",
+  "C_Cpp.default.includePath": [
+      "/usr/local/cuda/include",
+      "/usr/include",
+      "/usr/local/include"
+  ],
+  "C_Cpp.default.defines": [
+      "__CUDACC__"
+  ]
+
 }
