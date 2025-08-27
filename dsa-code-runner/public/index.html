@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #8b9cca; --primary-hover-color: #484d66; --output-bg-color: #d8e1e7; --output-text-color: #02060d; }
+        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #8b9cca; --primary-hover-color: #88a0b3; --output-bg-color: #d8e1e7; --output-text-color: #02060d; }
         html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #404c5e; --primary-hover-color: #495766; --output-bg-color: #030712; --output-text-color: #d1d5db; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; }
         .card { background-color: var(--card-bg-color); transition: background-color 0.3s ease; }
@@ -20,7 +20,7 @@
         textarea::-webkit-scrollbar, pre::-webkit-scrollbar { width: 8px; }
         textarea::-webkit-scrollbar-track, pre::-webkit-scrollbar-track { background: transparent; }
         textarea::-webkit-scrollbar-thumb, pre::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 20px; }
-        #editor-container { border: 1px solid var(--border-color); border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        #editor-container { background-color: var(--bg-color); border: 1px solid var(--border-color); border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
     </style>
 </head>
 <body class="min-h-screen">
@@ -94,9 +94,9 @@
 
         const placeholders = {
             python: 'import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.linspace(0, 2 * np.pi, 200)\ny = np.sin(x)\n\nplt.plot(x, y)\nplt.title("Simple Sine Wave")\nplt.xlabel("X-axis")\nplt.ylabel("Y-axis")\n\n# Instead of plt.show(), save the figure\nplt.savefig("output.png")\n\nprint("Graph saved to output.png")',
-            cpp: '#include <iostream>\\n\\nint main() {\\n    std::cout << "Hello from C++!";\\n    return 0;\\n}',
-            c: '#include <stdio.h>\\n\\nint main() {\\n    printf("Hello from C!");\\n    return 0;\\n}',
-            java: 'public class Main {\\n    public static void main(String[] args) {\\n        System.out.println("Hello from Java!");\\n    }\\n}'
+            cpp: '#include <iostream>\n\nint main() {\n    std::cout << "Hello from C++!";\n    return 0;\n}',
+            c: '#include <stdio.h>\n\nint main() {\n    printf("Hello from C!");\n    return 0;\n}',
+            java: 'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Hello from Java!");\n    }\n}'
         };
 
         languageSelect.addEventListener('change', () => {
@@ -104,6 +104,9 @@
             if (editor) {
                 monaco.editor.setModelLanguage(editor.getModel(), newLang);
                 const currentCode = editor.getValue();
+                // --- FIX ---
+                // Check if the current code is one of the placeholder values.
+                // This now works correctly because the placeholder strings use real newlines.
                 const isPlaceholder = Object.values(placeholders).includes(currentCode);
                 if (isPlaceholder || currentCode === '') { editor.setValue(placeholders[newLang]); }
             }
@@ -117,7 +120,6 @@
                 const response = await fetch('/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language: languageSelect.value, code: codeToRun, input_data: inputData.value }), });
                 const result = await response.json();
                 
-                // --- EDITED: Handle image and text output ---
                 outputElement.innerHTML = ''; // Clear previous output
                 
                 if (result.image) {
@@ -127,7 +129,6 @@
                     outputElement.appendChild(img);
                 }
                 
-                // Always display text output if it exists
                 if (result.text && result.text.trim() !== '') {
                     const textPre = document.createElement('pre');
                     textPre.textContent = result.text;

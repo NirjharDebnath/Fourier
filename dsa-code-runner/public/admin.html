@@ -7,17 +7,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --border-color: #d1d5db; }
-        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --border-color: #4b5563; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
-        .card { background-color: var(--card-bg-color); }
-        th { background-color: var(--bg-color); }
+        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #8b9cca; --primary-hover-color: #484d66; --output-bg-color: #d8e1e7; --output-text-color: #02060d; }
+        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #404c5e; --primary-hover-color: #495766; --output-bg-color: #030712; --output-text-color: #d1d5db; }
+        body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; }
+        .card { background-color: var(--card-bg-color); transition: background-color 0.3s ease; }
+        th { background-color: var(--bg-color); transition: background-color 0.3s ease; }
     </style>
 </head>
 <body class="min-h-screen p-4 sm:p-8">
+    
     <div class="card container mx-auto max-w-6xl p-6 rounded-xl shadow-2xl">
-        <h1 class="text-2xl sm:text-3xl font-bold mb-4">Admin Dashboard</h1>
-        <p class="text-sm mb-6" style="color: var(--text-muted-color);">Live view of all active student sessions.</p>
+        <!-- Add this header right inside the main card div -->
+        <header class="flex justify-between items-center mb-4">
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-bold">Admin Dashboard</h1>
+                <p class="text-sm mt-1" style="color: var(--text-muted-color);">Live view of all active student sessions.</p>
+            </div>
+            <div>
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2" style="color: var(--text-muted-color); --tw-ring-color: var(--primary-color);">
+                    <svg id="theme-icon-dark" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path></svg>
+                    <svg id="theme-icon-light" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                </button>
+                <a href="/admin/logout" class="ml-4 text-sm font-medium" style="color: var(--text-muted-color);">Logout</a>
+            </div>
+        </header>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y" style="border-color: var(--border-color);">
                 <thead class="bg-gray-50">
@@ -47,5 +60,33 @@
             </table>
         </div>
     </div>
+    <!-- Add this script at the end of the body -->
+    <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIconDark = document.getElementById('theme-icon-dark');
+        const themeIconLight = document.getElementById('theme-icon-light');
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                themeIconLight.classList.remove('hidden');
+                themeIconDark.classList.add('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                themeIconDark.classList.remove('hidden');
+                themeIconLight.classList.add('hidden');
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            const newTheme = isDark ? 'dark' : 'light';
+            localStorage.setItem('theme', newTheme);
+            applyTheme(newTheme);
+        });
+
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        applyTheme(savedTheme);
+    </script>
 </body>
 </html>

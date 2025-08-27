@@ -7,12 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #4f46e5; }
-        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #6366f1; }
+        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #8886be; }
+        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #8886be; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; }
         .card { background-color: var(--card-bg-color); transition: background-color 0.3s ease; }
         h2 { border-bottom: 1px solid var(--border-color); }
-        code { background-color: var(--bg-color); color: var(--primary-color); }
+        code { background-color: var(--bg-color); color: var(--primary-color); padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-weight: 500; }
     </style>
 </head>
 <body class="min-h-screen">
@@ -29,36 +29,53 @@
                 </button>
             </header>
 
-            <article class="prose dark:prose-invert max-w-none" style="color: var(--text-color);">
+            <article class="prose dark:prose-invert max-w-none space-y-4" style="color: var(--text-color);">
                 <h2 class="text-2xl font-semibold pb-2 mb-4">How to Use</h2>
                 <p>This platform is designed to be simple and intuitive. Follow the steps below to get started.</p>
                 
-                <h3 class="text-xl font-semibold mt-6">For Students</h3>
-                <ol class="list-decimal list-inside space-y-2">
+                <h3 class="text-xl font-semibold pt-4">For Students</h3>
+                <ol class="list-decimal list-inside space-y-2 pl-4">
                     <li>From the home page, click on the <strong>Student Login</strong> button.</li>
                     <li>Enter your full name and university roll number to access the IDE.</li>
-                    <li>Once in the IDE, select your desired programming language from the dropdown menu.</li>
-                    <li>Write your code in the left text area and provide any necessary standard input (stdin) in the right text area.</li>
-                    <li>Click the <strong>Run Code</strong> button to execute your program in a secure Docker container. The output will appear at the bottom.</li>
+                    <li>Once in the IDE, select your programming language from the dropdown. The editor will provide a "Hello World" snippet.</li>
+                    <li>Write your code in the professional-grade Monaco Editor (the engine behind VS Code), which provides syntax highlighting.</li>
+                    <li>Provide any necessary standard input (stdin) in the right text area.</li>
+                    <li>Click <strong>Run Code</strong> to execute your program. The output, including any text or images, will appear below.</li>
                 </ol>
 
-                <h3 class="text-xl font-semibold mt-6">For Teachers</h3>
-                <ol class="list-decimal list-inside space-y-2">
+                <h3 class="text-xl font-semibold pt-4">For Teachers</h3>
+                <ol class="list-decimal list-inside space-y-2 pl-4">
                     <li>From the home page, click on the <strong>Teacher Login</strong> button.</li>
-                    <li>Enter the admin credentials to access the dashboard.</li>
-                    <li>The dashboard provides a live view of all currently logged-in students, including their roll number, name, IP address, and login time.</li>
+                    <li>Enter the admin credentials (default: <code>admin</code> / <code>password</code>) to access the dashboard.</li>
+                    <li>The dashboard provides a live, read-only view of all currently logged-in students.</li>
                 </ol>
 
-                <h2 class="text-2xl font-semibold pb-2 mb-4 mt-8">Supported Languages</h2>
+                <h2 class="text-2xl font-semibold pb-2 mb-4 pt-6">Key Features</h2>
+                
+                <h3 class="text-xl font-semibold pt-4">Multi-Language Support</h3>
                 <p>The runner supports the following languages with these specific requirements:</p>
-                <ul class="list-disc list-inside space-y-2">
-                    <li><strong>Python:</strong> Uses Python 3.12.</li>
-                    <li><strong>C/C++:</strong> Uses the latest GCC/G++ compilers.</li>
-                    <li><strong>Java:</strong> Uses OpenJDK 17. The system is smart! It will automatically detect the name of your <code>public class</code> and name the file accordingly, so you don't have to name it <code>Main</code>.</li>
+                <ul class="list-disc list-inside space-y-2 pl-4">
+                    <li><strong>Python:</strong> Uses Python 3.9. Pre-installed libraries include <code>numpy</code>, <code>pandas</code>, <code>scipy</code>, <code>scikit-learn</code>, <code>sympy</code>, and <code>matplotlib</code>.</li>
+                    <li><strong>C/C++:</strong> Uses the latest GCC/G++ compilers available in the Debian Bullseye repository.</li>
+                    <li><strong>Java:</strong> Uses OpenJDK 17. The system automatically detects your <code>public class</code> name, so you are not required to name your class <code>Main</code>.</li>
                 </ul>
 
-                <h2 class="text-2xl font-semibold pb-2 mb-4 mt-8">Credits</h2>
-                <!-- Your Credits Snippet Goes Here -->
+                <h3 class="text-xl font-semibold pt-4">Graphical Plots with Matplotlib</h3>
+                <p>You can generate and view plots from your Python code. Instead of using <code>plt.show()</code>, which will not work, save your plot to a file named <code>output.png</code>. The system will automatically detect this file and display the image in the output box.</p>
+                <p>Example: <code>plt.savefig("output.png")</code></p>
+
+                <h3 class="text-xl font-semibold pt-4">Security and Isolation</h3>
+                <p>Every code submission is executed inside a brand new, isolated Docker container. This container has no network access and has strict memory and CPU limits, ensuring that code runs securely without affecting the server or other users. The container is immediately destroyed after execution.</p>
+
+                <h2 class="text-2xl font-semibold pb-2 mb-4 pt-6">Technology Stack</h2>
+                <ul class="list-disc list-inside space-y-2 pl-4">
+                    <li><strong>Backend:</strong> Flask (Python Web Framework)</li>
+                    <li><strong>Containerization:</strong> Docker</li>
+                    <li><strong>Frontend:</strong> HTML, Tailwind CSS, JavaScript</li>
+                    <li><strong>Code Editor:</strong> Monaco Editor</li>
+                </ul>
+
+                <h2 class="text-2xl font-semibold pb-2 mb-4 pt-6">Credits</h2>
                 <div class="p-4 rounded-lg" style="background-color: var(--bg-color);">
                     <p>This project was conceptualized and developed by <strong>Dwaipayan Datta and Nirjhar Debnath</strong>, students of the Computer Science and Engineering department at Kalyani Government Engineering College.</p>
                     <p class="mt-2">This collaborative effort aims to provide a modern and useful tool for the academic community at KGEC.</p>
@@ -77,3 +94,6 @@
     </script>
 </body>
 </html>
+
+
+
