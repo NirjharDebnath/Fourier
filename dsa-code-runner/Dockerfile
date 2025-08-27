@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 # Copy the current directory contents into the container at /usr/src/app
 # We will mount the actual student code file at runtime, so this is optional
 # COPY . .
-
+RUN pip install numpy pandas matplotlib
 # Command to run the python script
 # We will override this command when we run the container
 CMD ["python3", "./main.py"]

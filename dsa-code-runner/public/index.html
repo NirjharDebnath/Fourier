@@ -2,13 +2,13 @@
 <html lang="en" class="">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DSA Code Runner</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #4f46e5; --primary-hover-color: #4338ca; --output-bg-color: #111827; --output-text-color: #f9fafb; }
-        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #6366f1; --primary-hover-color: #4f46e5; --output-bg-color: #030712; --output-text-color: #d1d5db; }
+        :root { --bg-color: #f3f4f6; --card-bg-color: #ffffff; --text-color: #1f2937; --text-muted-color: #6b7280; --border-color: #d1d5db; --primary-color: #8b9cca; --primary-hover-color: #484d66; --output-bg-color: #d8e1e7; --output-text-color: #02060d; }
+        html.dark { --bg-color: #111827; --card-bg-color: #1f2937; --text-color: #f9fafb; --text-muted-color: #9ca3af; --border-color: #4b5563; --primary-color: #404c5e; --primary-hover-color: #495766; --output-bg-color: #030712; --output-text-color: #d1d5db; }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); transition: background-color 0.3s ease, color 0.3s ease; }
         .card { background-color: var(--card-bg-color); transition: background-color 0.3s ease; }
         textarea, select { background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-color); transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
@@ -20,6 +20,7 @@
         textarea::-webkit-scrollbar, pre::-webkit-scrollbar { width: 8px; }
         textarea::-webkit-scrollbar-track, pre::-webkit-scrollbar-track { background: transparent; }
         textarea::-webkit-scrollbar-thumb, pre::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 20px; }
+        #editor-container { border: 1px solid var(--border-color); border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
     </style>
 </head>
 <body class="min-h-screen">
@@ -49,22 +50,16 @@
                 </select>
             </div>
 
-            <!-- GFG/LeetCode Style Layout -->
             <div class="flex flex-col md:flex-row gap-6" style="height: 65vh;">
-                <!-- Left Column: Code Editor -->
                 <div class="w-full md:w-3/5 flex flex-col">
-                    <label for="codeInput" class="block text-sm font-medium mb-2">Your Code:</label>
-                    <textarea id="codeInput" class="flex-grow w-full p-3 rounded-md shadow-sm font-mono text-sm"></textarea>
+                    <label class="block text-sm font-medium mb-2">Your Code:</label>
+                    <div id="editor-container" class="flex-grow w-full"></div>
                 </div>
-
-                <!-- Right Column: Input & Output -->
                 <div class="w-full md:w-2/5 flex flex-col gap-4">
-                    <!-- Input Area -->
                     <div class="flex flex-col h-2/5">
                         <label for="inputData" class="block text-sm font-medium mb-2">Standard Input (stdin):</label>
                         <textarea id="inputData" class="flex-grow w-full p-3 rounded-md shadow-sm font-mono text-sm"></textarea>
                     </div>
-                    <!-- Output Area -->
                     <div class="flex flex-col h-3/5">
                         <h2 class="text-lg font-semibold mb-2">Output:</h2>
                         <pre id="output" class="output-pre flex-grow p-4 rounded-md overflow-y-auto text-sm whitespace-pre-wrap font-mono"></pre>
@@ -75,20 +70,74 @@
             <button id="runButton" class="run-button w-full mt-6 text-white font-bold py-3 px-4 rounded-md shadow-lg">Run Code</button>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.41.0/min/vs/loader.js"></script>
     <script>
-        const codeInput = document.getElementById('codeInput'), inputData = document.getElementById('inputData'), languageSelect = document.getElementById('language'), outputElement = document.getElementById('output'), runButton = document.getElementById('runButton'), themeToggle = document.getElementById('theme-toggle'), themeIconDark = document.getElementById('theme-icon-dark'), themeIconLight = document.getElementById('theme-icon-light');
-        function applyTheme(theme) { if (theme === 'dark') { document.documentElement.classList.add('dark'); themeIconLight.classList.remove('hidden'); themeIconDark.classList.add('hidden'); } else { document.documentElement.classList.remove('dark'); themeIconDark.classList.remove('hidden'); themeIconLight.classList.add('hidden'); } }
+        const inputData = document.getElementById('inputData'), languageSelect = document.getElementById('language'), outputElement = document.getElementById('output'), runButton = document.getElementById('runButton'), themeToggle = document.getElementById('theme-toggle'), themeIconDark = document.getElementById('theme-icon-dark'), themeIconLight = document.getElementById('theme-icon-light');
+        let editor;
+
+        require.config({ paths: { 'vs': 'https://cdn.jsdelivr.net/npm/monaco-editor@0.41.0/min/vs' }});
+        require(['vs/editor/editor.main'], function() {
+            const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            editor = monaco.editor.create(document.getElementById('editor-container'), { value: '', language: 'python', theme: savedTheme === 'dark' ? 'vs-dark' : 'vs', automaticLayout: true, fontSize: 14, minimap: { enabled: false }, scrollbar: { verticalScrollbarSize: 8, horizontalScrollbarSize: 8 } });
+            editor.setValue(placeholders.python);
+        });
+
+        function applyTheme(theme) {
+            if (theme === 'dark') { document.documentElement.classList.add('dark'); themeIconLight.classList.remove('hidden'); themeIconDark.classList.add('hidden'); } else { document.documentElement.classList.remove('dark'); themeIconDark.classList.remove('hidden'); themeIconLight.classList.add('hidden'); }
+            if (editor) { monaco.editor.setTheme(theme === 'dark' ? 'vs-dark' : 'vs'); }
+        }
+
         themeToggle.addEventListener('click', () => { const isDark = document.documentElement.classList.toggle('dark'); const newTheme = isDark ? 'dark' : 'light'; localStorage.setItem('theme', newTheme); applyTheme(newTheme); });
         const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
         applyTheme(savedTheme);
-        languageSelect.addEventListener('change', () => { const placeholders = { python: 'print("Hello from Python!")', cpp: '#include <iostream>\\n\\nint main() {\\n    std::cout << "Hello from C++!";\\n    return 0;\\n}', c: '#include <stdio.h>\\n\\nint main() {\\n    printf("Hello from C!");\\n    return 0;\\n}', java: 'public class Main {\\n    public static void main(String[] args) {\\n        System.out.println("Hello from Java!");\\n    }\\n}' }; codeInput.placeholder = placeholders[languageSelect.value]; });
-        languageSelect.dispatchEvent(new Event('change'));
+
+        const placeholders = {
+            python: 'import matplotlib.pyplot as plt\nimport numpy as np\n\nx = np.linspace(0, 2 * np.pi, 200)\ny = np.sin(x)\n\nplt.plot(x, y)\nplt.title("Simple Sine Wave")\nplt.xlabel("X-axis")\nplt.ylabel("Y-axis")\n\n# Instead of plt.show(), save the figure\nplt.savefig("output.png")\n\nprint("Graph saved to output.png")',
+            cpp: '#include <iostream>\\n\\nint main() {\\n    std::cout << "Hello from C++!";\\n    return 0;\\n}',
+            c: '#include <stdio.h>\\n\\nint main() {\\n    printf("Hello from C!");\\n    return 0;\\n}',
+            java: 'public class Main {\\n    public static void main(String[] args) {\\n        System.out.println("Hello from Java!");\\n    }\\n}'
+        };
+
+        languageSelect.addEventListener('change', () => {
+            const newLang = languageSelect.value;
+            if (editor) {
+                monaco.editor.setModelLanguage(editor.getModel(), newLang);
+                const currentCode = editor.getValue();
+                const isPlaceholder = Object.values(placeholders).includes(currentCode);
+                if (isPlaceholder || currentCode === '') { editor.setValue(placeholders[newLang]); }
+            }
+        });
+
         runButton.addEventListener('click', async () => {
+            if (!editor) return;
             runButton.disabled = true; runButton.textContent = 'Executing...'; outputElement.textContent = 'Running...';
+            const codeToRun = editor.getValue();
             try {
-                const response = await fetch('/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language: languageSelect.value, code: codeInput.value, input_data: inputData.value }), });
+                const response = await fetch('/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ language: languageSelect.value, code: codeToRun, input_data: inputData.value }), });
                 const result = await response.json();
-                outputElement.textContent = result.output || result.error || 'No output.';
+                
+                // --- EDITED: Handle image and text output ---
+                outputElement.innerHTML = ''; // Clear previous output
+                
+                if (result.image) {
+                    const img = document.createElement('img');
+                    img.src = 'data:image/png;base64,' + result.image;
+                    img.className = 'max-w-full h-auto mx-auto my-2 rounded-md';
+                    outputElement.appendChild(img);
+                }
+                
+                // Always display text output if it exists
+                if (result.text && result.text.trim() !== '') {
+                    const textPre = document.createElement('pre');
+                    textPre.textContent = result.text;
+                    outputElement.appendChild(textPre);
+                }
+
+                if (!result.image && (!result.text || result.text.trim() === '')) {
+                    outputElement.textContent = 'No output.';
+                }
+
             } catch (error) { console.error('Error:', error); outputElement.textContent = 'An error occurred. Check the server console.'; } finally { runButton.disabled = false; runButton.textContent = 'Run Code'; }
         });
     </script>

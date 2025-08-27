@@ -15,7 +15,10 @@ echo "Server will be available at http://localhost:3000"
 echo "Press CTRL+C to stop the server."
 
 # Run the Python application
-python app.py
+cd ..
+source .venv/bin/activate
+cd dsa-code-runner
+python3 app.py
 
 echo ""
 echo "--- Server stopped. ---"
